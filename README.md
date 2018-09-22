@@ -1,2 +1,2 @@
 # UFL Project (WIP)
-Solving Uncapacitated Facility Location problem with Subgradient technique
+Solving **_Uncapacitated Facility Location_** problem with _Subgradient technique_
