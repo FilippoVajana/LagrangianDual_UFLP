@@ -2,7 +2,6 @@ from pulp import *
 from solver_utils import *
 from data_utils import *
 import numpy as np
-import seaborn
 
 class UFLWolsey():
     C = None
@@ -161,8 +160,8 @@ class UFLWolsey():
         return z_best
 
 if __name__ == '__main__':
-    clients = 100
-    locations = 10
+    clients = 50
+    locations = 3
     
     dg = DataGenerator()
     # init clients revenues
@@ -220,15 +219,5 @@ if __name__ == '__main__':
     plt.ylabel('Step Size')
     plt.title('Subgradient Step Size')
     plt.grid(True)
-
-    # #subgradient norm
-    # plt.figure(3)
-    # #plt.subplot(421)
-    # norm = logger.d["norm"]
-    # plt.plot(norm)
-    # plt.xlabel('Loops')
-    # plt.ylabel('Square Subgradient Norm')
-    # plt.title('Subgradient Norm')
-    # plt.grid(True)
 
     plt.show()
