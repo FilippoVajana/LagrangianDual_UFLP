@@ -21,7 +21,6 @@ def get_objectiveFunction_value(problem):
 
 def get_variable_value(problem, name):
     l = []
-
     for v in problem.variables():
         v_name = str(v.name).split('_')
         if v_name[0].lower() == name.lower():
