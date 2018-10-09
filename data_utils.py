@@ -31,6 +31,7 @@ class DataGenerator:
             print(f"VAR_matrix : \n{m} - ({type.lower()})")
         return m
 
+
 class DataLogger:
     """
     Data logger class
@@ -43,16 +44,47 @@ class DataLogger:
             self.d[key] = list()
         self.d[key].append(data)
 
-    def plotData(self, key, title):
-        plt.plot(self.d[key])
-        plt.title(title)        
-        #plt.show()
+import jsonpickle as json
+class InstanceData:
+    """
+    Represents a problem's instance data
+    """
 
-    def plotSubgradientProcess(self, lr_key, ip_key):
-        lr_data = self.d[lr_key]        
-        ip_data = self.d[ip_key] * len(lr_data)
-        plt.plot(lr_data)
-        plt.plot(ip_data, '--')
-        plt.title("Subgradient process")    
-        plt.ylabel("Objective function value")
-        #plt.show()
+    def __init__(self, clients, locations):
+        self.c_num = clients
+        self.l_num = locations
+        self.min = 0
+        self.max = 10
+
+        # generate data        
+        self.U = np.zeros(self.c_num)        
+        self.C = np.random.randint(self.min, self.max+1, (self.c_num, self.l_num))
+        avg_cp = [np.average(self.C[i]) for i in range(self.c_num)]
+        #print("avg_cp = \n", avg_cp)
+        self.F = [np.random.randint(avg_cp[i]/2, avg_cp[i]) for i in range(self.c_num)]  
+        
+        
+    def save(self):
+        # serialize instance
+        data = json.encode(self)
+        # create file
+        name = "instance_{}_{}.json".format(self.c_num, self.l_num)
+        file = open(name, "w+")
+        # write data
+        file.write(data)
+        # close file
+        file.close()
+
+    def load(self):
+        # read file
+        name = "instance_{}_{}.json".format(self.c_num, self.l_num)
+        file = open(name, "r")
+        # deserialize instance
+        data = file.read()
+        instance = json.decode(data)
+        return instance
+
+    def print(self):
+        print("U = \n", self.U)
+        print("C = \n", self.C)
+        print("F = \n", self.F)
