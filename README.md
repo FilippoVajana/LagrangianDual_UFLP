@@ -1,2 +1,2 @@
-# UFL Project (WIP)
-Solve **_Uncapacitated Facility Location_** Lagrangian dual problem with _Subgradient technique_
+# UFL Project
+Solve **_Uncapacitated Facility Location_** using _Subgradient technique_ applied to Lagrangian dual problem.
