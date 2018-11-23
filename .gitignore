@@ -50,3 +50,5 @@ package-lock.json
 
 # Test
 pandas_experiment.ipynb
+/data
+*.mps
