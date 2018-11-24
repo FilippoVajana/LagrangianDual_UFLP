@@ -87,10 +87,6 @@ class BenchmarkResult_v2():
 
         # unfold result
         unf = self.unfold_dict(var)
-
-        #HACK: check type, remove after
-        # for k,v in unf.items():
-        #     print(k, type(v))
         return unf
 
 class Runner:
@@ -211,42 +207,8 @@ class Runner:
 
         return df
     
-    def run_benchmark(self, shapes=[], count=0, dir=None):
-        t_start = time.time()
-        # get data
-        data = []
-        if dir is str:            
-            data = self.load_instances(dir)
-        else:
-            data = self.build_instances(shapes, count)
-        
-        # run
-        import solver_utils as solver
-        results = []
-        for idx,i in enumerate(data):
-            log.info(f'Instance #{idx}')
-            res = BenchmarkResult_v2(i)
-            log.info('Solve primal')
-            res = solver.solve_primal(i, res)
-            log.info('Solve relaxed')
-            res = solver.solve_relaxed(i, res)
-            log.info('Solve lagrange')
-            res = solver.solve_lagrangian(i, res)
-            results.append(res)
 
-        # save data file
-        self.save_instances(data)
-
-        # save result file
-        df = self.to_dataframe(results)
-        self.save_dataframe(df)
-
-        t_end = time.time()
-        log.info(f'Benchmark (serial) run in: {round((t_end - t_start) / 60, 1)} min')
-
-        return df
-
-    def run_benchmark_parallel(self, shapes=[], count=0, dir=None):
+    def run_benchmark(self, shapes=[], count=0, dir=None, jobs=-1):
         t_start = time.time()
         # get data
         data = []
@@ -269,7 +231,7 @@ class Runner:
             res = solver.solve_lagrangian(i, res)
             return res
 
-        results = job.Parallel(n_jobs=-1, verbose=50)(job.delayed(run)(i,idx) for idx,i in enumerate(data))
+        results = job.Parallel(n_jobs=jobs, verbose=50)(job.delayed(run)(i,idx) for idx,i in enumerate(data))
         
 
         # save data file
@@ -280,26 +242,24 @@ class Runner:
         self.save_dataframe(df)
 
         t_end = time.time()
-        log.info(f'Benchmark (parallel) run in: {round((t_end - t_start) / 60, 1)} min')
+        log.info(f'Run time: {round((t_end - t_start) / 60, 1)} min. ({jobs} jobs)')
 
         return df
         
 
 
 if __name__ == '__main__':
-    c_long = [10,20,40,60,80]
-    l_long = [2,4,8,12,16]
+    c_long = [10,20,40,60,80,120]
+    l_long = [2,4,8,16,24,32]
     s_long = np.array(np.meshgrid(c_long,l_long)).T.reshape(-1,2)    
-    r_long = 1    
+    r_long = 10    
     
     c_short = [5,15,25]
     l_short = [2,4,6,8]
     s_short = np.array(np.meshgrid(c_short,l_short)).T.reshape(-1,2)    
-    r_short = 12 
+    r_short = 10 
 
     # run benchmark
-    runner = Runner()
-    runner.run_benchmark(s_short, r_short)
-
-    # run parallel
-    #runner.run_benchmark_parallel(s_short, r_short)
+    runner = Runner()    
+    runner.run_benchmark(s_long, r_long, jobs=-1)
+    #runner.run_benchmark(s_short, r_short)
