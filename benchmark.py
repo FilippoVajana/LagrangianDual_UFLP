@@ -93,6 +93,14 @@ class Runner:
     '''
     Benchmark runner
     '''
+    def __init__(self):
+        log.info('Initialize folders')
+        # create main data folder
+        path = os.path.join(os.getcwd(), "data")
+        if not (os.path.exists(path) and os.path.isdir(path)):
+            os.mkdir(path)
+        self.DATA_PATH = path
+
     def build_instances(self, shapes, count):
         log.info(f'Build {len(shapes) * count} instances')
         instances = []
@@ -106,17 +114,15 @@ class Runner:
     def init_folders(self):
         log.info('Initialize folders')
         # create main data folder
-        path = os.path.join(os.getcwd(), "data")
-        if not (os.path.exists(path) and os.path.isdir(path)):
-            os.mkdir(path)
+        # path = os.path.join(os.getcwd(), "data")
+        # if not (os.path.exists(path) and os.path.isdir(path)):
+        #     os.mkdir(path)
         # create run subfolder
         name = datetime.datetime.now().strftime("%d%m_%H%M")
         name = datetime.datetime.now().strftime("%d%m") #remove after testing
-        run_path = os.path.join(path, name)
+        run_path = os.path.join(self.DATA_PATH, name)
         if not os.path.exists(run_path):
-            os.mkdir(run_path)
-        # save paths        
-        self.DATA_PATH = path
+            os.mkdir(run_path)        
         self.RUN_PATH = run_path
 
     def save_instances(self, instances):
