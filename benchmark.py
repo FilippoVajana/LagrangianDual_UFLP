@@ -113,8 +113,7 @@ class Runner:
 
     def init_folders(self):
         log.info('Initialize folders')
-        name = datetime.datetime.now().strftime("%d%m_%H%M")
-        name = datetime.datetime.now().strftime("%d%m") #remove after testing
+        name = datetime.datetime.now().strftime("%d%m")
         run_path = os.path.join(self.DATA_PATH, name)
         if not os.path.exists(run_path):
             os.mkdir(run_path)        
